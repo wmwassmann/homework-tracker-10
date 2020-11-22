@@ -30,6 +30,8 @@ Please feel free to fork the repo, or contact me through Email
 
 Project Status: In Progress.
 
+This is one that I didn't understand when I first worked on it, but ever since 11/18, which is when we started working with RPG: Adventurer's Academy database work, this has become easier to grasp.  I struggled with console work, because I didn't have a visible thing to see other than words on the screen, which I struggle with.  But I understand it more now that before - I'm just hitting a deadline.
+
 ## Contact:
 
 GitHub: https://github.com/wmwassmann
