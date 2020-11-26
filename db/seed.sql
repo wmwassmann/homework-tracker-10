@@ -7,7 +7,7 @@ VALUES
     ('Jaguars'),
     ('Chiefs');
 
-INSERT INTO position
+INSERT INTO role
     (title, team_id)
 VALUES 
     ('Quarterback', 1),
@@ -26,9 +26,7 @@ VALUES
 
 
 INSERT INTO player
-    (first_name, last_name, salary, position_id, number_id)
-
-
+    (first_name, last_name, salary, role_id, number_id)
 VALUES
     ('Russell', 'Wilson', 40000000, 1, 3),
     ('Chris', 'Carson', 1000000, 2, 32),
