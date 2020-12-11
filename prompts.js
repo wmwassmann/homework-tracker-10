@@ -14,7 +14,8 @@ module.exports = {
                 'Add department',
                 'Add role',              
                 'Add employee',
-                'Update employee role',               
+                'Update employee role',
+                'Terminate employee',               
                 'Quit'
             ]
         }
@@ -105,6 +106,12 @@ module.exports = {
             type: "input",
             message: "What is the employe ID?:  "
         }
-    ]
-    
+    ],
+    removeEmployee: [
+        {
+            name: "first",
+            type: "input",
+            message: "Enter the employee ID you want to remove:  "
+        }
+    ]   
 };

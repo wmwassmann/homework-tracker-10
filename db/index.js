@@ -115,33 +115,7 @@ class DB {
         return this.connection.query(
             `SELECT DISTINCT title FROM role`
         );
-    };
-    addNewEmployee() {
-        return this.connection.query(
-            `SELECT 
-                role.id, 
-                role.title 
-            FROM 
-                role 
-            ORDER BY 
-                role.id,
-            SELECT * FROM employee,
-            INSERT INTO employee SET ?`
-        )
-    }
-    updateEmployeeRole(employeeID, roleID) {
-        return this.connection.query(
-            `
-            'SELECT 
-                role.id, 
-                role.title 
-            FROM 
-                role 
-            ORDER 
-                BY role.id;'
-            `,[employeeID, roleID]
-        );
-    };
+    };    
 }
 
 const db = new DB (connection)

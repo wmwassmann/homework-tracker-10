@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS employeedb;
-CREATE DATABASE employeedb;
-USE employeedb;
+DROP DATABASE IF EXISTS employees;
+CREATE DATABASE employees;
+USE employees;
 CREATE TABLE department (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(30) UNIQUE NOT NULL
@@ -23,12 +23,8 @@ CREATE TABLE employee (
   manager_id INT UNSIGNED,
   INDEX man_ind (manager_id),
   CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES employee(id) ON DELETE SET NULL
-
-
-
-use employeedb;
-
-
+);
+use employees;
 INSERT INTO department
     (name)
 VALUES

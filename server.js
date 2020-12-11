@@ -1,7 +1,7 @@
 // ========================================================================
 //                             DEPENDANCIES 
 // ========================================================================
-const mysql = require('mysql');
+
 const inquirer = require('inquirer');
 const logo = require('asciiart-logo');
 const config = require('./package.json');
@@ -38,8 +38,11 @@ async function mainPrompt() {
             addNewEmployee();
             break;
         case 'Update employee role':
-            updateEmployeeRole();
-            break;       
+            removeCheck();
+            break;             
+        case 'Terminate employee':
+            removeCheck();
+            break; 
         default:
             return process.exit();
         }
@@ -88,6 +91,31 @@ async function viewOnlyRoles() {
     return titles 
 };
 
+function removeCheck(input) {
+    const yesNo = {
+        yes: "Yes",
+        no: "No, I need to view my options."
+    };
+    inquirer.prompt([
+        {
+            name: "action",
+            type: "list",
+            message: "In order to proceed an employee, an ID must be entered. View all employees to get" +
+                " the employee ID. Do you know the employee ID?",
+            choices: [yesNo.yes, yesNo.no]
+        }
+    ]).then(answer => {
+        if (input === 'Terminate employee' && answer.action === "Yes") removeEmployee();
+        else if (input === 'Update employee role' && answer.action === "Yes") updateEmployeeRole();
+        else viewAllEmployees();
+
+
+
+    });
+};
+
+
+
 async function updateEmployeeRole() {
     const employeeId = await inquirer.prompt(prompts.askId);
 
@@ -113,10 +141,11 @@ async function updateEmployeeRole() {
         WHERE employee.id = ${employeeId.name}`, async (err, res) => {
             if (err) throw err;
             console.log('Role has been updated..')
-            prompt();
+            mainPrompt();
         });
     });
 }
+
 
 async function addNewDepartment() { 
     inquirer.prompt(prompts.newDepartmentPrompt).then((response) => {
@@ -156,7 +185,14 @@ async function addNewRole() {
 
 async function addNewEmployee() {
     const addname = await inquirer.prompt(prompts.askName);
-    connection.query('SELECT role.id, role.title FROM role ORDER BY role.id;', async (err, res) => {
+    connection.query(
+        `SELECT 
+            role.id, 
+            role.title 
+        FROM 
+            role 
+        ORDER BY 
+            role.id;`, async (err, res) => {
         if (err) throw err;
         const { role } = await inquirer.prompt([
             {
@@ -173,7 +209,7 @@ async function addNewEmployee() {
                 continue;
             }
         }
-        connection.query('SELECT * FROM employee', async (err, res) => {
+        connection.query(`SELECT * FROM employee`, async (err, res) => {
             if (err) throw err;
             let choices = res.map(res => `${res.first_name} ${res.last_name}`);
             choices.push('none');
@@ -212,7 +248,7 @@ async function addNewEmployee() {
                 },
                 (err, res) => {
                     if (err) throw err;
-                    prompt();
+                    mainPrompt();
 
                 }
             );
@@ -220,6 +256,24 @@ async function addNewEmployee() {
     });
 
 }
+
+async function removeEmployee() {
+
+    const answer = await inquirer.prompt(prompts.removeEmployee);
+
+    connection.query('DELETE FROM employee WHERE ?',
+        {
+            id: answer.first
+        },
+        function (err) {
+            if (err) throw err;
+        }
+    )
+    console.log('Employee has been removed on the system!');
+    mainPrompt();
+
+};
+
 
 function init() {
     console.log(logo(config).render());
