@@ -89,42 +89,34 @@ async function viewOnlyRoles() {
 };
 
 async function updateEmployeeRole() {
-    const employees = await db.viewAllEmployees();
-    console.log(employees);
-    const employeeChoices = employees.map(({ First_Name, Last_Name, id }) => ({ 
-        name: `${First_Name} ${Last_Name}`,
-        value: id
-        })
-    );
-    const { employeeID } = await inquirer.prompt([
-        {
-        type: 'list',
-        name: 'employeeID',
-        message: 'Which employee would you like to update?',
-        choices: employeeChoices
-        }
-    ]);
+    const employeeId = await inquirer.prompt(prompts.askId);
 
-    const roles = await db.viewOnlyRoles();
-    const roleChoice = roles.map(({ title, id }) => ({ 
-        name: title,
-        value: id
-        })
-    );
-    const answer = await inquirer.prompt([
-        {
-        type: 'list',
-        name: 'roleID',
-        message: 'Which role would you like to update?',
-        choices: roleChoice
+    connection.query('SELECT role.id, role.title FROM role ORDER BY role.id;', async (err, res) => {
+        if (err) throw err;
+        const { role } = await inquirer.prompt([
+            {
+                name: 'role',
+                type: 'list',
+                choices: () => res.map(res => res.title),
+                message: 'What is the new employee role?: '
+            }
+        ]);
+        let roleId;
+        for (const row of res) {
+            if (row.title === role) {
+                roleId = row.id;
+                continue;
+            }
         }
-    ]);
-    await db.updateEmployeeRole(employeeID, answer.roleID);
-        console.log('\n');
-        console.log("Updated role successfully.");
-        console.log('\n');  
-        return mainPrompt();
-};
+        connection.query(`UPDATE employee 
+        SET role_id = ${roleId}
+        WHERE employee.id = ${employeeId.name}`, async (err, res) => {
+            if (err) throw err;
+            console.log('Role has been updated..')
+            prompt();
+        });
+    });
+}
 
 async function addNewDepartment() { 
     inquirer.prompt(prompts.newDepartmentPrompt).then((response) => {
@@ -228,45 +220,6 @@ async function addNewEmployee() {
     });
 
 }
-
-
-// async function addNewEmployee() {
-//     const departments = await viewOnlyDepartments();
-//     const roles = await viewOnlyRoles();
-//     prompts.newEmployeePrompt[1].choices = departments.map(department => ({ 
-//         name: department.name, 
-//         value: department.id 
-//         })
-//     );
-//     prompts.newEmployeePrompt[2].choices = roles.map(role => ({ 
-//         name: role.title, 
-//         value: role.id
-//         })
-//     );
-//     inquirer.prompt(prompts.newEmployeePrompt).then((response) => {
-//         connection.query(
-//             ` 
-//             INSERT INTO employee
-//                 (first_name, last_name, salary, role_id, manager_id)
-//             VALUES
-//                 ('${response.newFirstName}', '${response.newLastName}',  ${response.newSalary}, ${response.newRoleID}, 1);
-//             `
-
-//             );            
-//         connection.query(
-//             ` 
-//             INSERT INTO role
-//                 (title, department_id)
-//             VALUES 
-//                 ('${response.newRole}', ${response.newDepartment});
-//             `
-//         ); 
-//         console.log('\n');
-//         console.log("New employee added successfully.");
-//         console.log('\n');  
-//         return mainPrompt();
-//     });
-// };
 
 function init() {
     console.log(logo(config).render());

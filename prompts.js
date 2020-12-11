@@ -12,11 +12,9 @@ module.exports = {
                 'View all employees by department',
                 'View all employees by role',
                 'Add department',
-                'Add role',
-                'Add number',
+                'Add role',              
                 'Add employee',
-                'Update employee role',
-                'Update employee number',
+                'Update employee role',               
                 'Quit'
             ]
         }
@@ -99,6 +97,13 @@ module.exports = {
             name: "last",
             type: "input",
             message: "Enter the last name: "
+        }
+    ],
+    askId: [
+        {
+            name: "name",
+            type: "input",
+            message: "What is the employe ID?:  "
         }
     ]
     
