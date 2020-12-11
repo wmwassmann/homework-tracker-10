@@ -11,84 +11,104 @@ class DB {
             `
         SELECT
             role.id, 
-            player.first_name AS First_Name, 
-            player.last_name AS Last_Name,
-            role.title AS role,
-            player.salary AS Salary,
-            team.name AS Team
+            employee.first_name AS First_Name, 
+            employee.last_name AS Last_Name,
+            role.title AS role,         
+            department.name AS Department
         FROM 
-            player
+            employee
         LEFT JOIN
-            role ON player.id = role.id
+            role ON employee.id = role.id
 		JOIN
-			team ON role.team_id = team.id
+			department ON role.department_id = department.id
         ORDER BY 
             role.id;
         `
         );        
     };
-    viewAllByTeams() {
+    viewAllByDepartments() {
         return this.connection.query(
-            `
-        SELECT 
-            player.id AS ID, 
-            team.name AS Team_Name,
-			player.first_name AS First_Name, 
-            player.last_name AS Last_Name,
-            role.title AS role
-        FROM 
-            player
-        LEFT JOIN
-            role ON player.id = role.id
-		JOIN
-			team ON role.team_id = team.id
-        ORDER BY 
-            role.id;
-        `
+            `SELECT 
+                department.name AS department, 
+                role.title, 
+                employee.id, 
+                employee.first_name, 
+                employee.last_name
+            FROM 
+                employee
+            LEFT JOIN 
+                role ON (role.id = employee.role_id)
+            LEFT JOIN 
+                department ON (department.id = role.department_id)
+            ORDER BY department.name;`
         );
 
     };
     viewAllByRoles() {
         return this.connection.query(
-            `
-            SELECT
-            role.id, 
-            role.title AS role,
-            player.first_name AS First_Name, 
-            player.last_name AS Last_Name,
-            player.salary AS Salary,
-            team.name AS Team
-        FROM 
-            player
-        LEFT JOIN
-            role ON player.id = role.id
-		LEFT JOIN
-			team ON role.team_id = team.id
-        ORDER BY 
-            player.role_id;
-        `
+            `SELECT 
+                role.title, 
+                employee.id, 
+                employee.first_name, 
+                employee.last_name, 
+                department.name AS department
+            FROM 
+                employee
+            LEFT JOIN 
+                role ON (role.id = employee.role_id)
+            LEFT JOIN 
+                department ON (department.id = role.department_id)
+            ORDER BY role.title;`
         );
     };
-    viewAllPlayers() {
+    viewAllEmployees() {
         return this.connection.query(
-            `
-        SELECT
-            player.id, 
-            player.first_name AS First_Name, 
-            player.last_name AS Last_Name,
-            role.title AS role
-        FROM 
-            player
-        LEFT JOIN
-            role ON player.id = role.id
-        ORDER BY 
-            player.id;
-        `
+            `SELECT 
+                employee.id, 
+                employee.first_name, 
+                employee.last_name, 
+                role.title, 
+                department.name AS department, 
+                role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager
+            FROM 
+                employee
+            LEFT JOIN 
+                employee manager on manager.id = employee.manager_id
+            INNER JOIN 
+                role ON (role.id = employee.role_id)
+            INNER JOIN 
+                department ON (department.id = role.department_id)
+            ORDER BY employee.id;`
         );
     };
-    viewOnlyTeams() {
+
+    viewByManager() {
         return this.connection.query(
-            `SELECT * FROM team ORDER BY team.id`
+            `SELECT 
+                CONCAT(manager.first_name, ' ', manager.last_name) AS manager, 
+                department.name AS department, 
+                employee.id, 
+                employee.first_name, 
+                employee.last_name, 
+                role.title
+        FROM 
+            employee
+        LEFT JOIN 
+            employee manager on manager.id = employee.manager_id
+        INNER JOIN 
+            role ON (role.id = employee.role_id && employee.manager_id != 'NULL')
+        INNER JOIN 
+            department ON (department.id = role.department_id)
+        ORDER BY manager;`
+ 
+        );
+    }
+    viewOnlyDepartments() {
+        return this.connection.query(
+            `SELECT * FROM 
+                department 
+            ORDER BY 
+                department.id`
         );
     };
     viewOnlyRoles() {
@@ -96,13 +116,30 @@ class DB {
             `SELECT DISTINCT title FROM role`
         );
     };
-    updatePlayerRole(playerID, roleID) {
+    addNewEmployee() {
+        return this.connection.query(
+            `SELECT 
+                role.id, 
+                role.title 
+            FROM 
+                role 
+            ORDER BY 
+                role.id,
+            SELECT * FROM employee,
+            INSERT INTO employee SET ?`
+        )
+    }
+    updateEmployeeRole(employeeID, roleID) {
         return this.connection.query(
             `
-            UPDATE player
-            SET role_id = ? 
-            WHERE player.id = ?;
-            `,[playerID, roleID]
+            'SELECT 
+                role.id, 
+                role.title 
+            FROM 
+                role 
+            ORDER 
+                BY role.id;'
+            `,[employeeID, roleID]
         );
     };
 }

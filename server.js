@@ -12,41 +12,34 @@ require('console.table');
 
 // Server-side calls
 
-
 async function mainPrompt() {
     inquirer   
         .prompt(prompts.mainPrompt)
     .then((answer) => {
         switch (answer.choice) {
-        case 'View all players':
-            viewAllPlayers();
+        case 'View all employees':
+            viewAllEmployees();
             break;
-        case 'View all players by team':
-            viewAllByTeams();
+        case 'View all employees by department':
+            viewAllByDepartments();
             break;
-        case 'View all players by position':
-            viewAllByPositions();
+        case 'View all employees by role':
+            viewAllByRoles();
             break;
-        case 'Add team':
-            viewOnlyTeams();
-            addNewTeam();
+        case 'Add department':
+            viewOnlyDepartments();
+            addNewDepartment();
             break;
-        case 'Add position':
-            viewOnlyPositions();
-            addNewPosition();
+        case 'Add role':
+            viewOnlyRoles();
+            addNewRole();
             break;
-        case 'Add player':
-            addNewPlayer();
+        case 'Add employee':
+            addNewEmployee();
             break;
-        case 'Add player':
-            addNewNumber();
-            break;
-        case 'Update player position':
-            updatePlayerPosition();
-            break;
-        case 'Update player number':
-            updatePlayerNumber();
-            break;
+        case 'Update employee role':
+            updateEmployeeRole();
+            break;       
         default:
             return process.exit();
         }
@@ -61,59 +54,59 @@ async function viewAllTables() {
     mainPrompt();  
 }  
 
-async function viewAllPlayers() {
-    const titles = await db.viewAllPlayers().catch(err => console.log(err));
+async function viewAllEmployees() {
+    const titles = await db.viewAllEmployees().catch(err => console.log(err));
     console.log('\n');
     console.table(titles);
     mainPrompt();
 };
 
-async function viewAllByTeams() {
-    const titles = await db.viewAllByTeams().catch(err => console.log(err));
+async function viewAllByDepartments() {
+    const titles = await db.viewAllByDepartments().catch(err => console.log(err));
     console.log('\n');
     console.table(titles);
     mainPrompt();
 };
 
-async function viewAllByPositions() {
-    const titles = await db.viewAllByPositions().catch(err => console.log(err));
+async function viewAllByRoles() {
+    const titles = await db.viewAllByRoles().catch(err => console.log(err));
     console.log('\n');
     console.table(titles);
     mainPrompt();
 };
-async function viewOnlyTeams() {
-    const titles = await db.viewOnlyTeams().catch(err => console.log(err));
+async function viewOnlyDepartments() {
+    const titles = await db.viewOnlyDepartments().catch(err => console.log(err));
     console.log('\n');
     console.table(titles);
     return titles
 };
 
-async function viewOnlyPositions() {
-    const titles = await db.viewOnlyPositions().catch(err => console.log(err));
+async function viewOnlyRoles() {
+    const titles = await db.viewOnlyRoles().catch(err => console.log(err));
     console.log('\n');
     console.table(titles);
     return titles 
 };
 
-async function updatePlayerPosition() {
-    const players = await db.viewAllPlayers();
-    console.log(players);
-    const playerChoices = players.map(({ First_Name, Last_Name, id }) => ({ 
+async function updateEmployeeRole() {
+    const employees = await db.viewAllEmployees();
+    console.log(employees);
+    const employeeChoices = employees.map(({ First_Name, Last_Name, id }) => ({ 
         name: `${First_Name} ${Last_Name}`,
         value: id
         })
     );
-    const { playerID } = await inquirer.prompt([
+    const { employeeID } = await inquirer.prompt([
         {
         type: 'list',
-        name: 'playerID',
-        message: 'Which player would you like to update?',
-        choices: playerChoices
+        name: 'employeeID',
+        message: 'Which employee would you like to update?',
+        choices: employeeChoices
         }
     ]);
 
-    const positions = await db.viewOnlyPositions();
-    const positionChoice = positions.map(({ title, id }) => ({ 
+    const roles = await db.viewOnlyRoles();
+    const roleChoice = roles.map(({ title, id }) => ({ 
         name: title,
         value: id
         })
@@ -121,147 +114,159 @@ async function updatePlayerPosition() {
     const answer = await inquirer.prompt([
         {
         type: 'list',
-        name: 'positionID',
-        message: 'Which position would you like to update?',
-        choices: positionChoice
+        name: 'roleID',
+        message: 'Which role would you like to update?',
+        choices: roleChoice
         }
     ]);
-    await db.updatePlayerPosition(playerID, answer.positionID);
+    await db.updateEmployeeRole(employeeID, answer.roleID);
         console.log('\n');
-        console.log("Updated position successfully.");
+        console.log("Updated role successfully.");
         console.log('\n');  
         return mainPrompt();
 };
 
-async function updatePlayerNumber() {
-    const players = await db.viewAllPlayers();
-    console.log(players);
-    const playerChoices = players.map(({ First_Name, Last_Name, id }) => ({ 
-        name: `${First_Name} ${Last_Name}`,
-        value: id
-        })
-    );
-    const { playerID } = await inquirer.prompt([
-        {
-        type: 'list',
-        name: 'playerID',
-        message: 'Which player would you like to update?',
-        choices: playerChoices
-        }
-    ]);
-
-    const positions = await db.viewOnlyPositions();
-    const numberChoice = positions.map(({ title, id }) => ({ 
-        name: title,
-        value: id
-        })
-    );
-    const answer = await inquirer.prompt([
-        {
-        type: 'list',
-        name: 'numberID',
-        message: 'Which number would you like to update?',
-        choices: numberChoice
-        }
-    ]);
-    await db.updatePlayerNumber(playerID, answer.numberID);
-        console.log('\n');
-        console.log("Updated number successfully.");
-        console.log('\n');  
-        return mainPrompt();
-};
-
-async function addNewTeam() { 
-    inquirer.prompt(prompts.newTeamPrompt).then((response) => {
+async function addNewDepartment() { 
+    inquirer.prompt(prompts.newDepartmentPrompt).then((response) => {
         connection.query(
         `
-        INSERT INTO team
+        INSERT INTO department
             (name)
         VALUES
-            ('${response.newTeamName}');
+            ('${response.newDepartmentName}');
         `
         );
         console.log('\n');
-        console.log("New team added successfully.");
+        console.log("New department added successfully.");
         console.log('\n');  
         return mainPrompt();
     });
 };
 
 
-async function addNewPosition() { 
-    inquirer.prompt(prompts.newPositionPrompt).then((response) => {
+async function addNewRole() { 
+    inquirer.prompt(prompts.newRolePrompt).then((response) => {
         connection.query(
         `
-        INSERT INTO position
-            (title, team_id)
+        INSERT INTO role
+            (title, department_id)
         VALUES 
-            ('${response.newPositionTitle}', ${response.newTeamID});
+            ('${response.newRoleTitle}', ${response.newDepartmentID});
         `
         );
         console.log('\n');
-        console.log("New position added successfully.");
+        console.log("New role added successfully.");
         console.log('\n');  
 
         return mainPrompt();
     });
 };
 
-async function addNewNumber() { 
-    inquirer.prompt(prompts.newNumberPrompt).then((response) => {
-        connection.query(
-        `
-        INSERT INTO number
-            (title, team_id)
-        VALUES 
-            ('${response.newNumberTitle}', ${response.newNumberID});
-        `
-        );
-        console.log('\n');
-        console.log("New number added successfully.");
-        console.log('\n');  
+async function addNewEmployee() {
+    const addname = await inquirer.prompt(prompts.askName);
+    connection.query('SELECT role.id, role.title FROM role ORDER BY role.id;', async (err, res) => {
+        if (err) throw err;
+        const { role } = await inquirer.prompt([
+            {
+                name: 'role',
+                type: 'list',
+                choices: () => res.map(res => res.title),
+                message: 'What is the employee role?: '
+            }
+        ]);
+        let roleId;
+        for (const row of res) {
+            if (row.title === role) {
+                roleId = row.id;
+                continue;
+            }
+        }
+        connection.query('SELECT * FROM employee', async (err, res) => {
+            if (err) throw err;
+            let choices = res.map(res => `${res.first_name} ${res.last_name}`);
+            choices.push('none');
+            let { manager } = await inquirer.prompt([
+                {
+                    name: 'manager',
+                    type: 'list',
+                    choices: choices,
+                    message: 'Choose the employee Manager: '
+                }
+            ]);
+            let managerId;
+            let managerName;
+            if (manager === 'none') {
+                managerId = null;
+            } else {
+                for (const data of res) {
+                    data.fullName = `${data.first_name} ${data.last_name}`;
+                    if (data.fullName === manager) {
+                        managerId = data.id;
+                        managerName = data.fullName;
+                        console.log(managerId);
+                        console.log(managerName);
+                        continue;
+                    }
+                }
+            }
+            console.log('Employee has been added. Please view all employee to verify...');
+            connection.query(
+                'INSERT INTO employee SET ?',
+                {
+                    first_name: addname.first,
+                    last_name: addname.last,
+                    role_id: roleId,
+                    manager_id: parseInt(managerId)
+                },
+                (err, res) => {
+                    if (err) throw err;
+                    prompt();
 
-        return mainPrompt();
+                }
+            );
+        });
     });
-};
 
-async function addNewPlayer() {
-    const teams = await viewOnlyTeams();
-    const positions = await viewOnlyPositions();
-    prompts.newPlayerPrompt[2].choices = teams.map(team => ({ 
-        name: team.name, 
-        value: team.id 
-        })
-    );
-    prompts.newPlayerPrompt[3].choices = positions.map(position => ({ 
-        name: position.title, 
-        value: position.id
-        })
-    );
-    inquirer.prompt(prompts.newPlayerPrompt).then((response) => {
-        connection.query(
-            ` 
-            INSERT INTO player
-                (first_name, last_name, salary, position_id, manager_id)
-            VALUES
-                ('${response.newFirstName}', '${response.newLastName}',  ${response.newSalary}, ${response.newPositionID}, 1);
-            `
+}
 
-            );            
-        connection.query(
-            ` 
-            INSERT INTO position
-                (title, team_id)
-            VALUES 
-                ('${response.newPosition}', ${response.newTeam});
-            `
-        ); 
-        console.log('\n');
-        console.log("New player added successfully.");
-        console.log('\n');  
-        return mainPrompt();
-    });
-};
+
+// async function addNewEmployee() {
+//     const departments = await viewOnlyDepartments();
+//     const roles = await viewOnlyRoles();
+//     prompts.newEmployeePrompt[1].choices = departments.map(department => ({ 
+//         name: department.name, 
+//         value: department.id 
+//         })
+//     );
+//     prompts.newEmployeePrompt[2].choices = roles.map(role => ({ 
+//         name: role.title, 
+//         value: role.id
+//         })
+//     );
+//     inquirer.prompt(prompts.newEmployeePrompt).then((response) => {
+//         connection.query(
+//             ` 
+//             INSERT INTO employee
+//                 (first_name, last_name, salary, role_id, manager_id)
+//             VALUES
+//                 ('${response.newFirstName}', '${response.newLastName}',  ${response.newSalary}, ${response.newRoleID}, 1);
+//             `
+
+//             );            
+//         connection.query(
+//             ` 
+//             INSERT INTO role
+//                 (title, department_id)
+//             VALUES 
+//                 ('${response.newRole}', ${response.newDepartment});
+//             `
+//         ); 
+//         console.log('\n');
+//         console.log("New employee added successfully.");
+//         console.log('\n');  
+//         return mainPrompt();
+//     });
+// };
 
 function init() {
     console.log(logo(config).render());

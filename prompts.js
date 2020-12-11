@@ -8,112 +8,98 @@ module.exports = {
             message: 'What would you like to do?',
             type: 'list',
             choices: [
-                'View all players',
-                'View all players by team',
-                'View all players by position',
-                'Add team',
-                'Add position',
+                'View all employees',
+                'View all employees by department',
+                'View all employees by role',
+                'Add department',
+                'Add role',
                 'Add number',
-                'Add player',
-                'Update player position',
-                'Update player number',
+                'Add employee',
+                'Update employee role',
+                'Update employee number',
                 'Quit'
             ]
         }
     ],
-    newTeamPrompt: [
+    newDepartmentPrompt: [
         {
             type: 'input',
-            message: 'Input name of new team.',
-            name: 'newTeamName'
+            message: 'Input name of new department.',
+            name: 'newDepartmentName'
         }     
     ],
-    newPositionPrompt: [
+    newRolePrompt: [
         {
             type: 'input',
-            message: 'Input a new position title.',
-            name: 'newPositionTitle',
+            message: 'Input a new role title.',
+            name: 'newRoleTitle',
         },
         {
             type: 'input',
-            message: 'Input id of new team id.',
-            name: 'newTeamID'
-        }
-    ],
-    newNumberPrompt: [
-        {
-            type: 'input',
-            message: 'Input a new number title.',
-            name: 'newNumberTitle',
-        },
-        {
-            type: 'input',
-            message: 'Input id of new team id.',
-            name: 'newNumberID'
+            message: 'Input id of new department id.',
+            name: 'newDepartmentID'
         }
     ],
 
-
-    playerPrompt: [
+    employeePrompt: [
         {
             type: 'input',
-            message: 'Input first name of new player.',
+            message: 'Input first name of new employee.',
             name: 'newFirstName'
         },
         {
         type: 'input',
-        message: 'Input last name of new player.',
+        message: 'Input last name of new employee.',
         name: 'newLastName'
         },
         {
             type: 'list',
-            message: 'What is the new players team?',
-            name: 'newTeam',
+            message: 'What is the new employees department?',
+            name: 'newDepartment',
             choice: []
         },
         {
             type: 'list',
-            message: 'What is the new players position?',
-            name: 'newPosition',
+            message: 'What is the new employees role?',
+            name: 'newRole',
             choices: []
         },
         {
             type: 'input',
-            message: 'What is the new players position id?',
-            name: 'newPositionID'
+            message: 'What is the new employees role id?',
+            name: 'newRoleID'
         },
         {
             type: 'input',
-            message: 'Input new player salary.',
+            message: 'Input new employee salary.',
             name: 'newSalary'
         }
     ],
-    updatePositionPrompt: [
+    updateRolePrompt: [
         {
             type: 'list',
-            message: 'Input the players ID whose position ID you wish to edit.',
+            message: 'Input the employees ID whose role ID you wish to edit.',
             name: 'chosenID',
             choices: []
         }, 
         {
             type: 'list',
-            message: 'Input the players new position ID.',
-            name: 'updatedPositionID',
+            message: 'Input the employees new role ID.',
+            name: 'updatedRoleID',
             choices: []
         } 
     ],
-    updateNumberPrompt: [
+    askName: [
         {
-            type: 'list',
-            message: 'Input the players ID whose number ID you wish to edit.',
-            name: 'chosenID',
-            choices: []
-        }, 
+            name: "first",
+            type: "input",
+            message: "Enter the first name: "
+        },
         {
-            type: 'list',
-            message: 'Input the players new number ID.',
-            name: 'updatedNumberID',
-            choices: []
-        } 
+            name: "last",
+            type: "input",
+            message: "Enter the last name: "
+        }
     ]
+    
 };
